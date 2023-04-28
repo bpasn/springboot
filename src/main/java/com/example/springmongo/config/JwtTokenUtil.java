@@ -1,10 +1,10 @@
 package com.example.springmongo.config;
 
-import com.example.springmongo.models.Users;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import java.io.Serializable;
@@ -48,9 +48,9 @@ public static final long JWT_TOKEN_VALIDITY = 5 * 60 *60; //expiry in 5 minute
     }
 
     //generate token for user
-    public String generateToken(Users users){
+    public String generateToken(UserDetails users){
         Map<String,Object> claims = new HashMap<>();
-        return doGenerateToken(claims,users.getFirstName());
+        return doGenerateToken(claims,users.getUsername());
     }
 
     //while creating the token -
@@ -65,8 +65,8 @@ public static final long JWT_TOKEN_VALIDITY = 5 * 60 *60; //expiry in 5 minute
     }
 
     //validate token
-    public Boolean validateToken(String token, Users user){
+    public Boolean validateToken(String token, UserDetails user){
         final String username = getUsernameFromToken(token);
-        return (username.equals(user.getFirstName())) && !isTokenExpired(token);
+        return (username.equals(user.getUsername())) && !isTokenExpired(token);
     }
 }
